@@ -1,44 +1,85 @@
 from bottle import *
 from hashtagman import *
 
-#@route('/hello/<name>')
-#def index(name):
-#    return template('<b>Hello {{name}}</b>!', name=name)
-
-sol = li[randint(0, len(li)-1)]
-maxf = 10
-curf = 0
-tip = ""
+version = "#HashtagMan v0.1.0a1"
 
 @route('/')
-def index():
-    global tip
-    global curf
-    global maxf
-    global sol
+def index() -> "string":
 
-    if(request.query.get("tip") == None):
+    if not request.cookies.tip:
         sol = li[randint(0, len(li)-1)]
+        response.set_cookie("sol", sol)
 
-        maxf = 10
-        curf = 0
-        tip = ""
+        ## -1 what you actually want
+        response.set_cookie("maxf", "9")
+        response.set_cookie("curf", "0")
+        response.set_cookie("tip", "")
 
-        return "#HashtagMan v0.0.1 alpha 2: "+greeting()+"<br>"+"<form action=\"/\" method=\"POST\">"+"<input type=\"text\" name=\"tip\" maxlength=\"1\">"+"<input type=\"submit\" name=\"baum\" value=\"baum\">"
+        return version +": "+ \
+            greeting()+"<br>"+\
+            "<form action=\"/\" method=\"POST\">"+\
+            "<input type=\"text\" name=\"ntip\" maxlength=\"1\">"+\
+            "<input type=\"submit\" name=\"guess\" value=\"raten\">"
     else:
-        tip = request.query.get("tip") + request.query.get("ntip").upper()
+        tip = request.cookies.tip
+        sol = request.cookies.sol
+        curf = request.cookies.curf
+        maxf = request.cookies.maxf
 
-        if(request.query.get("ntip").upper() == None):
-            pass
+        return "Welcome back!<br>"+\
+            partSol(tip, sol) + "<br />" +\
+            "Faults " + curf + " / " + str(int(maxf)+1) + ": " + falseChars(tip, sol) +\
+            "<form action=\"/\" method=\"POST\">"+\
+            "<input type=\"text\" name=\"ntip\" maxlength=\"1\">"+\
+            "<input type=\"submit\" name=\"guess\" value=\"raten\">"
 
+@route('/', method='POST')
+def do_index() -> "string":
 
-        if(not rightChoice(tip, sol) and curf < maxf):
-            return "<form action=\"/\" method=\"POST\">"+"<input type=\"hidden\" name=\"tip\" value=\""+tip+"\">"+"<input type=\"text\" name=\"ntip\" maxlength=\"1\">"+"<input type=\"submit\" name=\"baum\" value=\"baum\">"
+    ntip = request.forms.get("ntip")
+    ttip = request.cookies.tip
+    if not ntip:
+        return """
+        <p>Please insert a letter. <br />
+           <a href="http://localhost:8080">go back -></a>
+           </p>
+        """
+
+    ntip = ntip.upper()
+    if ntip.upper() in ttip:
+        return """
+        <p>Please do not insert the same letter. <br />
+        <a href="http://localhost:8080">go back -></a>
+        </p>
+        """
+    else:
+        tip = ttip + ntip
+        response.set_cookie("tip", tip)
+
+    sol = request.cookies.sol
+    curf = request.cookies.curf
+    maxf = request.cookies.maxf
+
+    if not rightChoice(tip, sol) and curf < maxf:
+        if len(falseChars(ntip, sol)) > 0:
+            curf = int(curf) + 1
+            response.set_cookie("curf", str(curf))
+            curf = str(curf)
+
+        return partSol(tip, sol) + "<br />" +\
+            "Faults " + curf + " / " + str(int(maxf)+1) + ": " + falseChars(tip, sol) +\
+            "<form action=\"/\" method=\"POST\">"+\
+            "<input type=\"text\" name=\"ntip\" maxlength=\"1\">"+\
+            "<input type=\"submit\" name=\"guess\" value=\"raten\">"
+    else:
+        response.set_cookie("tip", "", expires=0)
+        response.set_cookie("sol", "", expires=0)
+        response.set_cookie("curf", "", expires=0)
+        response.set_cookie("maxf", "", expires=0)
+
+        if (rightChoice(tip, sol) and curf < maxf):
+            return "勝ち"
         else:
-            pass
-
-@route('/doof')
-def doof():
-    return "du bist doof"
+            return "負け"
 
 run(host='localhost', port=8080)
