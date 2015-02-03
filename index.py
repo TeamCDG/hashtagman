@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 from bottle import *
 from hashtagman import *
+from hpics import *
 
 version = "#HashtagMan v0.1.0a1"
 
@@ -11,7 +13,7 @@ def index() -> "string":
         response.set_cookie("sol", sol)
 
         ## -1 what you actually want
-        response.set_cookie("maxf", "9")
+        response.set_cookie("maxf", "8")
         response.set_cookie("curf", "0")
         response.set_cookie("tip", "")
 
@@ -19,7 +21,8 @@ def index() -> "string":
             greeting()+"<br>"+\
             "<form action=\"/\" method=\"POST\">"+\
             "<input type=\"text\" name=\"ntip\" maxlength=\"1\">"+\
-            "<input type=\"submit\" name=\"guess\" value=\"raten\">"
+            "<input type=\"submit\" name=\"guess\" value=\"raten\"> <br />" +\
+            pics[0]
     else:
         tip = request.cookies.tip
         sol = request.cookies.sol
@@ -31,11 +34,11 @@ def index() -> "string":
             "Faults " + curf + " / " + str(int(maxf)+1) + ": " + falseChars(tip, sol) +\
             "<form action=\"/\" method=\"POST\">"+\
             "<input type=\"text\" name=\"ntip\" maxlength=\"1\">"+\
-            "<input type=\"submit\" name=\"guess\" value=\"raten\">"
+            "<input type=\"submit\" name=\"guess\" value=\"raten\"> <br />" +\
+            pics[int(curf)]
 
 @route('/', method='POST')
 def do_index() -> "string":
-
     ntip = request.forms.get("ntip")
     ttip = request.cookies.tip
     if not ntip:
@@ -70,7 +73,8 @@ def do_index() -> "string":
             "Faults " + curf + " / " + str(int(maxf)+1) + ": " + falseChars(tip, sol) +\
             "<form action=\"/\" method=\"POST\">"+\
             "<input type=\"text\" name=\"ntip\" maxlength=\"1\">"+\
-            "<input type=\"submit\" name=\"guess\" value=\"raten\">"
+            "<input type=\"submit\" name=\"guess\" value=\"raten\"> <br />" +\
+            pics[int(curf)]
     else:
         response.set_cookie("tip", "", expires=0)
         response.set_cookie("sol", "", expires=0)
@@ -78,8 +82,8 @@ def do_index() -> "string":
         response.set_cookie("maxf", "", expires=0)
 
         if (rightChoice(tip, sol) and curf < maxf):
-            return "勝ち"
+            return '<p style="font-size:300px">勝ち</p><br />'
         else:
-            return "負け"
+            return '<h1>負け・・・死んだ</h1>' + pics[int(maxf)]
 
 run(host='localhost', port=8080)
