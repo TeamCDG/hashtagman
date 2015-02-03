@@ -17,6 +17,8 @@ greetings = [
 li = ['KATZENKLO', 'MEDIZINBALL', 'SCHNEEMANN',
          'AUTOBAHN', 'SCHULBUS', 'RHABARBERSAFT', 'HIPPOGREIF']
 
+version = "#HashtagMan v0.1.0a1"
+
 def partSol(tip, sol):
     """
     Beispiel:
@@ -71,17 +73,17 @@ def rightChoice(tip, sol):
 
 def greeting():
     """
-    Gibt zufällig eine passende Begrüßung zurück.    
+    Gibt zufällig eine passende Begrüßung zurück.
     """
     return greetings[randint(0, len(greetings)-1)]
 
 def guess():
     tip = ""
-    print("#HashtagMan v0.0.1 alpha 2: "+greeting())
+    print(version, ": ", greeting())
     sol = li[randint(0, len(li)-1)]
     maxf = 10
     curf = 0
-    
+
     while not rightChoice(tip, sol) and curf < maxf:
         print(partSol(tip, sol))
         print("faults "+str(curf)+" / "+str(maxf)+": "+falseChars(tip, sol))
