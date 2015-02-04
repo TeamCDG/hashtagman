@@ -17,7 +17,7 @@ greetings = [
 li = ['KATZENKLO', 'MEDIZINBALL', 'SCHNEEMANN',
          'AUTOBAHN', 'SCHULBUS', 'RHABARBERSAFT', 'HIPPOGREIF']
 
-version = "#HashtagMan v0.1.0a1"
+version = "#HashtagMan v0.1.0a2"
 
 def partSol(tip, sol):
     """

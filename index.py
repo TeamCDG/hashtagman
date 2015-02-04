@@ -3,7 +3,7 @@ from bottle import *
 from hashtagman import *
 from hpics import *
 
-version = "#HashtagMan v0.1.0a1"
+version = "#HashtagMan v0.1.0a2"
 
 @route('/')
 def index() -> "string":
@@ -69,7 +69,7 @@ def do_index() -> "string":
             response.set_cookie("curf", str(curf))
             curf = str(curf)
 
-        return partSol(tip, sol) + "<br />" +\
+        return '<span style="font-family:Monospace">' + partSol(tip, sol) + '</span>' +  "<br />" +\
             "Faults " + curf + " / " + str(int(maxf)+1) + ": " + falseChars(tip, sol) +\
             "<form action=\"/\" method=\"POST\">"+\
             "<input type=\"text\" name=\"ntip\" maxlength=\"1\">"+\
