@@ -30,7 +30,8 @@ def index() -> "string":
         maxf = request.cookies.maxf
 
         return "Welcome back!<br>"+\
-            partSol(tip, sol) + "<br />" +\
+            "<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>" +\
+            '<span style="font-family:\'Source Code Pro\'">' + partSol(tip, sol) + '</span>' +  "<br />" +\
             "Faults " + curf + " / " + str(int(maxf)+1) + ": " + falseChars(tip, sol) +\
             "<form action=\"/\" method=\"POST\">"+\
             "<input type=\"text\" name=\"ntip\" maxlength=\"1\">"+\
@@ -69,7 +70,8 @@ def do_index() -> "string":
             response.set_cookie("curf", str(curf))
             curf = str(curf)
 
-        return '<span style="font-family:Monospace">' + partSol(tip, sol) + '</span>' +  "<br />" +\
+        return "<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>" +\
+            '<span style="font-family:\'Source Code Pro\'">' + partSol(tip, sol) + '</span>' +  "<br />" +\
             "Faults " + curf + " / " + str(int(maxf)+1) + ": " + falseChars(tip, sol) +\
             "<form action=\"/\" method=\"POST\">"+\
             "<input type=\"text\" name=\"ntip\" maxlength=\"1\">"+\
@@ -80,6 +82,7 @@ def do_index() -> "string":
         response.set_cookie("sol", "", expires=0)
         response.set_cookie("curf", "", expires=0)
         response.set_cookie("maxf", "", expires=0)
+        response.set_cookie("sessionid", "", expires=0)
 
         if (rightChoice(tip, sol) and curf < maxf):
             return '<p style="font-size:300px">勝ち</p><br />'
